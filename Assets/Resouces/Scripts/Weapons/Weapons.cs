@@ -81,16 +81,16 @@ public class Weapons : MonoBehaviour
             bullet.transform.LookAt(target);
             bullet.gameObject.SetActive(true);
             bullet.Rigidbody.velocity = (target.position - _template.transform.position).normalized * _bulletSpeed;
-
+            OnWeaponsStateChanged?.Invoke(_type.Title, _type.BulletInMagazine, _type.BulletCount);
             yield return _shotDelay;
         }
         else
         { 
             yield return _reloadingDelay;
             Reload();
+            OnWeaponsStateChanged?.Invoke(_type.Title, _type.BulletInMagazine, _type.BulletCount);
         }
 
-        OnWeaponsStateChanged?.Invoke(_type.Title, _type.BulletInMagazine, _type.BulletCount);
         StopCoroutine(_doShot);
         _doShot = null;
         

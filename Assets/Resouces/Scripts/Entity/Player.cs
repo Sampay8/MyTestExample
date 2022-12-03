@@ -66,9 +66,6 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
         _doMoveToShotPoint = StartCoroutine(DoMoveToShotPoint());
-        Debug.DrawLine(_weapon.JoinPoint.position, _targetShot.position);
-                
-        
     }
 
     private IEnumerator DoMoveToShotPoint()

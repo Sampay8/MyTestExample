@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class EmemySpawner : MonoBehaviour
 {
-    public Action<int,int> OnEnemiesCountChange; 
+    public event Action<int,int> EnemiesCountChange; 
 
     [SerializeField] private Player _player;
     [SerializeField] private List<Wave> _waves;
@@ -29,7 +29,7 @@ public class EmemySpawner : MonoBehaviour
     private void Start()
     {   
         GoNextWave();
-        OnEnemiesCountChange?.Invoke(_curWave, _countInWave - _enemyDie);
+        EnemiesCountChange?.Invoke(_curWave, _countInWave - _enemyDie);
 
         StartCoroutine(DoSpawnCicle());
     }
@@ -54,7 +54,7 @@ public class EmemySpawner : MonoBehaviour
         if (_enemyDie >= _countInWave)
             GoNextWave();
 
-        OnEnemiesCountChange?.Invoke(_curWave, _countInWave - _enemyDie);
+        EnemiesCountChange?.Invoke(_curWave, _countInWave - _enemyDie);
     }
 
     private void GoNextWave()

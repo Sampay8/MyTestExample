@@ -17,5 +17,5 @@ MonoBehaviour:
     type: 3}
   _shootPause: 0.1
   _damage: 60
-  _magazineCount: 90
-  _magazine: 30
+  _bulletCount: 7950
+  _magazineSize: 30

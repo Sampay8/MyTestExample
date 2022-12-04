@@ -6,13 +6,14 @@ public class PlayerInput : MonoBehaviour
 {
     [SerializeField] private Player _player;
 
-    void Update()
+    private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Q))
             _player.PreviusWeapon();
         if (Input.GetKeyDown(KeyCode.E))
             _player.NextWeapon();
-
+        if (Input.GetKeyDown(KeyCode.R))
+            _player.ReloadWeapon();
         if (Input.GetKeyDown(KeyCode.Mouse0))
             _player.Attack();
     }

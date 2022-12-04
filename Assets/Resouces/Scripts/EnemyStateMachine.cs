@@ -34,8 +34,8 @@ public class EnemyStateMachine
 
     private void Enable()
     { 
-        Entity.OnEnemyDied += OnDie;
-        Entity.OnEnemyDamaged += OnDamage;
+        Entity.Died += OnDie;
+        Entity.Damaged += OnDamage;
 
     }
 
@@ -49,8 +49,8 @@ public class EnemyStateMachine
 
     private void Disable()
     { 
-        Entity.OnEnemyDied -= OnDie;
-        Entity.OnEnemyDamaged = OnDamage;
+        Entity.Died -= OnDie;
+        Entity.Damaged -= OnDamage;
     }
         
     public void SetState(State state)

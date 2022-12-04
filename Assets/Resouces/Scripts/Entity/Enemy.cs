@@ -7,8 +7,8 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public Action<Enemy> OnEnemyDied;
-    public Action OnEnemyDamaged;
+    public event Action<Enemy> Died;
+    public event Action Damaged;
 
     [SerializeField] private Player _player;
     [SerializeField] private float _speed = .5f;
@@ -34,6 +34,29 @@ public class Enemy : MonoBehaviour
     public Animator Animator { get; private set; }
     public bool IsCanAttack => Vector3.Distance(transform.position, _player.transform.position) <= _attackDistance;
 
+    public void Init(Player target) => _player = target;
+
+    public void ComeCloser() => Walk();
+
+    public void TakeDamage(float damage)
+    {
+        _health -= damage;
+        if (_health <= 0)
+            Died?.Invoke(this);
+        else
+            Damaged?.Invoke();
+
+    }
+    public void Attack()
+    {
+        transform.LookAt(_player.transform.position);
+
+        if (_doAttack == null)
+            _doAttack = StartCoroutine(DoAttack());
+    }
+
+    public void Death() => StartCoroutine(DoDeath());
+    
     private void Awake()
     {
         if (_collider == null)
@@ -61,8 +84,8 @@ public class Enemy : MonoBehaviour
     }
 
     private void LateUpdate()
-    { 
-        if(_stateMacine != null)
+    {
+        if (_stateMacine != null)
             _stateMacine.Update();
     }
 
@@ -115,27 +138,4 @@ public class Enemy : MonoBehaviour
         StopCoroutine(_doAttack);
         _doAttack = null;
     }
-
-    public void Init(Player target) => _player = target;
-
-    public void ComeCloser() => Walk();
-
-    public void TakeDamage(float damage)
-    {
-        _health -= damage;
-        if (_health <= 0)
-            OnEnemyDied?.Invoke(this);
-        else
-            OnEnemyDamaged?.Invoke();
-
-    }
-    public void Attack()
-    {
-        transform.LookAt(_player.transform.position);
-
-        if (_doAttack == null)
-            _doAttack = StartCoroutine(DoAttack());
-    }
-
-    public void Death() => StartCoroutine(DoDeath());
 }

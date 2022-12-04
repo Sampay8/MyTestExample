@@ -12,7 +12,7 @@ public class WeaponsInformer : MonoBehaviour
 
     private void Start()
     {
-        _weapons.OnWeaponsStateChanged += OnVeaponsStateChange;
+        _weapons.WeaponsStateChanged += OnVeaponsStateChange;
     }
 
     private void OnVeaponsStateChange(string weaponsTitle, int magazineAmmo, int bulletsCount)

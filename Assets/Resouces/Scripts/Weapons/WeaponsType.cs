@@ -36,9 +36,7 @@ public class WeaponsType : ScriptableObject
         return isSucses;
     }
 
-
-
-    internal int GetReloading()
+    public int GetReloading()
     {
         if (_bulletCount > _magazineSize)
         {

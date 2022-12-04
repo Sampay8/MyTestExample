@@ -45,10 +45,7 @@ public class Bullet : MonoBehaviour
 
     private IEnumerator DoDisableWaiting()
     {
-        while (gameObject.activeInHierarchy)
-        {
-            yield return _delayForDisable;
-            gameObject.SetActive(false);
-        }
+        yield return _delayForDisable;
+        gameObject.SetActive(false);
     }
 }

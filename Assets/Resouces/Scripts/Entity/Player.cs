@@ -5,8 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(Weapons))]
 public class Player : MonoBehaviour
 {
-    public Action<float> OnHealthChanged;
-    public Action OnDie;
+    public event Action<float> HealthChanged;
+    public event Action Die;
 
     private const float _maxHealth = 100f;
 
@@ -15,6 +15,9 @@ public class Player : MonoBehaviour
     [SerializeField] private float _health;
 
     private Weapons _weapon;
+
+    internal void ReloadWeapon() => _weapon.Reload();
+
     private Coroutine _doMoveToShotPoint;
     private float _rayDistance = 100f;
 
@@ -42,25 +45,18 @@ public class Player : MonoBehaviour
 
     private void Heal(float value)
     {
-        _health += value;
-
-        if (_health > _maxHealth)
-            _health = _maxHealth;
-
-        OnHealthChanged?.Invoke(_health);
+        _health = Mathf.Clamp(_health + value, 0, _maxHealth);
+        HealthChanged?.Invoke(_health);
     }
 
     public void TakeDamage(float damage)
     {
-        _health -= damage;
+         _health = Mathf.Clamp(_health - damage, 0, _maxHealth);
 
-        if (_health < 0)
-        {
-            _health = 0;
-            OnDie?.Invoke();          
-        }
+        if (_health <= 0)
+            Die?.Invoke();          
 
-        OnHealthChanged?.Invoke(_health);
+        HealthChanged?.Invoke(_health);
     }
 
     private void FixedUpdate()

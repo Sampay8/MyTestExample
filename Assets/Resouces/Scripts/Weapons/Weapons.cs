@@ -12,23 +12,19 @@ public class Weapons : MonoBehaviour
     [SerializeField] private WeaponsType _type;
     [SerializeField] private GameObject _template;
 
-    public Action<string, int, int> OnWeaponsStateChanged;
+    public event Action<string, int, int> WeaponsStateChanged;
 
     public Transform JoinPoint => _joinPoint;
-
+    
     private Coroutine _doShot;
+    private Coroutine _doReloading;
     private WaitForSeconds _reloadingDelay = new WaitForSeconds(3);
     private WaitForSeconds _shotDelay;
 
     private float _damage;
     private int _selected;
     private int _bulletInMagazine;
-
-    private void Start()
-    {
-        ChangeWeapon(_selected);
-    }
-        
+    
     public void SelectNext()
     {
         _selected--;
@@ -49,6 +45,20 @@ public class Weapons : MonoBehaviour
         ChangeWeapon(_selected);
     }
 
+    public void Shoot(Transform target)
+    {
+        if ( _type.BulletInMagazine > 0 && _doShot == null && target != null && _doReloading == null)
+            _doShot = StartCoroutine(DoShot(target));
+        else
+            Reload();
+    }
+
+    public void Reload()
+    {
+        if(_doReloading == null)
+         _doReloading = StartCoroutine(DoReloading());
+    }
+
     private void ChangeWeapon(int select)
     {
         if (_weaponsStorrage[_selected] != null)
@@ -60,45 +70,39 @@ public class Weapons : MonoBehaviour
             _type = _weaponsStorrage[_selected];
             _shotDelay = new WaitForSeconds(_type.ShootPause);
             _damage = _type.Damage;
-            OnWeaponsStateChanged?.Invoke(_type.Title, _type.BulletInMagazine, _type.BulletCount);
+            WeaponsStateChanged?.Invoke(_type.Title, _type.BulletInMagazine, _type.BulletCount);
         }
     }
 
-    public void Shoot(Transform target)
+    private void Start()
     {
-        if (_doShot == null && target != null)
-            _doShot = StartCoroutine(DoShot(target));
+        ChangeWeapon(_selected);
     }
 
     private IEnumerator DoShot(Transform target)
     {
-        if (_type.BulletInMagazine > 0)
-        {
-            _type.TrySpendBullet();
-            Bullet bullet = _pool.GetBullet();
-            bullet.SetDamageValue( _type );
-            bullet.transform.position = _template.transform.position;
-            bullet.transform.LookAt(target);
-            bullet.gameObject.SetActive(true);
-            bullet.Rigidbody.velocity = (target.position - _template.transform.position).normalized * _bulletSpeed;
-            OnWeaponsStateChanged?.Invoke(_type.Title, _type.BulletInMagazine, _type.BulletCount);
-            yield return _shotDelay;
-        }
-        else
-        { 
-            yield return _reloadingDelay;
-            Reload();
-            OnWeaponsStateChanged?.Invoke(_type.Title, _type.BulletInMagazine, _type.BulletCount);
-        }
+        _type.TrySpendBullet();
+        Bullet bullet = _pool.GetBullet();
+        bullet.SetDamageValue(_type);
+        bullet.transform.position = _template.transform.position;
+        bullet.transform.LookAt(target);
+        bullet.gameObject.SetActive(true);
+        bullet.Rigidbody.velocity = (target.position - _template.transform.position).normalized * _bulletSpeed;
+        WeaponsStateChanged?.Invoke(_type.Title, _type.BulletInMagazine, _type.BulletCount);
+        yield return _shotDelay;
 
         StopCoroutine(_doShot);
         _doShot = null;
         
     }
 
-    private void Reload()
+    private IEnumerator DoReloading()
     {
+        yield return _reloadingDelay;
         _bulletInMagazine = _type.GetReloading();
-         OnWeaponsStateChanged?.Invoke(_type.Title, _type.BulletInMagazine, _type.BulletCount);
+        WeaponsStateChanged?.Invoke(_type.Title, _type.BulletInMagazine, _type.BulletCount);
+        
+        StopCoroutine(_doReloading);
+        _doReloading = null;
     }
 }

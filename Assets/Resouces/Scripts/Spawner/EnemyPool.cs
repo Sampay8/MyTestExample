@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,20 +7,20 @@ public class EnemyPool : MonoBehaviour
     private EmemySpawner _spawner;
     private System.Random _rand = new System.Random();
 
-    internal void Init(Wave wawe, Player player, EmemySpawner spawner)
+    public void Init(Wave wawe, Player player, EmemySpawner spawner)
     {
         _spawner = spawner;
-        ReBoot(wawe,player);
+        ReBoot(wawe, player);
     }
 
     public void ReBoot(Wave wawe, Player player)
     {
         if (_enemies != null)
         {
-            foreach (Enemy enemy  in _enemies)
+            foreach (Enemy enemy in _enemies)
             {
-                enemy.OnEnemyDied -= _spawner.OnEnemyDie;
-                Destroy( enemy.gameObject);
+                enemy.Died -= _spawner.OnEnemyDie;
+                Destroy(enemy.gameObject);
             }
         }
 
@@ -35,11 +33,11 @@ public class EnemyPool : MonoBehaviour
             enemy.gameObject.SetActive(false);
             enemy.transform.parent = this.transform;
             _enemies.Add(enemy);
-            enemy.OnEnemyDied += _spawner.OnEnemyDie;
+            enemy.Died += _spawner.OnEnemyDie;
         }
     }
 
-    internal bool TryGetRandomEnemy(out Enemy enemy)
+    public bool TryGetRandomEnemy(out Enemy enemy)
     {
         bool isSucses = false;
         int number = _rand.Next(0, _enemies.Count - 1);

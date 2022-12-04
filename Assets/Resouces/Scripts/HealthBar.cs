@@ -12,19 +12,16 @@ public class HealthBar : MonoBehaviour
     private Coroutine _runCoroutine;
     private float _targetValue;
 
-    public void OnValueChange(float value)
-    {
-        SetValue(value);
-    }
+    public void OnValueChange(float value) =>SetValue(value);
 
     private void OnEnable()
     {
-        _player.OnHealthChanged += OnValueChange;
+        _player.HealthChanged += OnValueChange;
     }
 
     private void OnDisable()
     {
-        _player.OnHealthChanged -= OnValueChange;
+        _player.HealthChanged -= OnValueChange;
     }
 
     private void SetValue(float value)

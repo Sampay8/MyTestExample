@@ -16,9 +16,9 @@ public class WaveBar : MonoBehaviour
     private string _wave = "Волна: ";
     private int _curWave = -1;
 
-    private void OnEnable() =>_spawner.OnEnemiesCountChange += OnValueChange;
+    private void OnEnable() =>_spawner.EnemiesCountChange += OnValueChange;
 
-    private void OnDisable() =>_spawner.OnEnemiesCountChange -= OnValueChange;
+    private void OnDisable() =>_spawner.EnemiesCountChange -= OnValueChange;
 
     private void OnValueChange(int wave, int value)
     {

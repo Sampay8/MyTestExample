@@ -27,12 +27,12 @@ public class PlayerMover : MonoBehaviour
 
     private void OnEnable()
     {
-        _player.OnDie += Die;
+        _player.Die += Die;
     }
 
     private void OnDisable()
     {
-        _player.OnDie -= Die;
+        _player.Die -= Die;
     }
 
     private void Die()
@@ -55,12 +55,9 @@ public class PlayerMover : MonoBehaviour
     private void Move()
     {
         _moveDirection = Input.GetAxis(_vertical) * Vector3.forward + Input.GetAxis(_horisontal) * Vector3.right;
+        
         bool isWalk;
-
-        if (_moveDirection.x != 0 || _moveDirection.z != 0)
-            isWalk = true;
-        else
-            isWalk = false;
+        isWalk = _moveDirection.x != 0 || _moveDirection.z != 0;
 
         transform.LookAt(new Vector3(_targretToRotate.transform.position.x, transform.position.y, _targretToRotate.transform.position.z));
         transform.position += _moveDirection * _speed * Time.fixedDeltaTime;
